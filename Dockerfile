@@ -17,4 +17,8 @@ RUN php composer-setup.php
 RUN php -r "unlink('composer-setup.php');" && \
     mv composer.phar /usr/local/bin/composer
 
+# Install wait for it
+COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
+RUN chmod +x /usr/local/bin/wait-for-it.sh
+
 ENTRYPOINT ["/bin/sh", "entrypoint.sh"]
