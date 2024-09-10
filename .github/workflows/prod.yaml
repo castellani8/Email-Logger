@@ -30,21 +30,21 @@ jobs:
           echo "  IdentityFile ~/.ssh/deploy_key" >> ~/.ssh/config
           chmod 600 ~/.ssh/config
 
-      - name: Give permissions to ssh
-        run: |
-          ssh -i ~/.ssh/deploy_key ubuntu@${{ secrets.SERVER_ADDRESS }} '
-            sudo mkdir -p /var/www/html &&
-            sudo chmod -R 755 /var/www/html &&
-            sudo chown -R ubuntu:www-data /var/www/html
-          '
-        env:
-          SSH_KEY: ${{ secrets.SSH_KEY }}
+#      - name: Give permissions to ssh
+#        run: |
+#          ssh -i ~/.ssh/deploy_key root@${{ secrets.SERVER_ADDRESS }} '
+#            sudo mkdir -p /var/www/html &&
+#            sudo chmod -R 755 /var/www/html &&
+#            sudo chown -R root:www-data /var/www/html
+#          '
+#        env:
+#          SSH_KEY: ${{ secrets.SSH_KEY }}
 
       - name: copy file via ssh key
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_ADDRESS }}
-          username: ubuntu
+          username: root
           port: 22
           key: ${{ secrets.SSH_KEY }}
           source: "*"
