@@ -1,0 +1,52 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: PRODUCTION
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install SSH Client
+        run: sudo apt-get install -y openssh-client
+
+      - name: Create SSH key file
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+      - name: Set up SSH key
+        run: |
+          echo "Host ${{ secrets.SERVER_ADDRESS }}" >> ~/.ssh/config
+          echo "  StrictHostKeyChecking no" >> ~/.ssh/config
+          echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
+          echo "  IdentityFile ~/.ssh/deploy_key" >> ~/.ssh/config
+          chmod 600 ~/.ssh/config
+
+      - name: Give permissions to ssh
+        run: |
+          ssh -i ~/.ssh/deploy_key ubuntu@${{ secrets.SERVER_ADDRESS }} '
+            sudo mkdir -p /var/www/html &&
+            sudo chmod -R 755 /var/www/html &&
+            sudo chown -R ubuntu:www-data /var/www/html
+          '
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+
+      - name: copy file via ssh key
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_ADDRESS }}
+          username: ubuntu
+          port: 22
+          key: ${{ secrets.SSH_KEY }}
+          source: "*"
+          target: /var/www/html
+          overwrite: true
