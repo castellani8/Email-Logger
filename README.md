@@ -7,7 +7,7 @@ A cron was configured to run the command every hour in the server.
 
 ## Installing locally
 
-First of all you need to have docker installed on your computer
+First of all you need to have docker installed on your computer, you can find more information in this link: <a href="https://docs.docker.com/engine/install/">Install Docker</a>.
 
 - Just copy the .env.example file and rename the copied file to .env
 - Run the following command ``` docker-compose up --build -d ```
@@ -19,7 +19,7 @@ First of all you need to have docker installed on your computer
 
 ## Endpoints
 
-### Base Environment
+### Base Environment For Doing Requests
 - **Base Local URL:** `localhost:8005`
 - **Headers:** (Required for all endpoints except Get Token)
     - `Content-Type: application/json`
